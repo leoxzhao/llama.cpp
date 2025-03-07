@@ -3809,7 +3809,7 @@ struct llm_build_llama : public llm_graph_context {
         // inp_pos - contains the positions
         struct ggml_tensor * inp_pos = build_inp_pos();
 
-        auto inp_attn = build_attn_inp_kv_self(true, false);
+        auto * inp_attn = build_attn_inp_kv_unified(true, false);
 
         const float kq_scale = hparams.f_attention_scale == 0.0f ? 1.0f/sqrtf(float(n_embd_head)) : hparams.f_attention_scale;
         for (int il = 0; il < n_layer; ++il) {
@@ -3972,7 +3972,7 @@ struct llm_build_deci : public llm_graph_context {
         // inp_pos - contains the positions
         struct ggml_tensor * inp_pos = build_inp_pos();
 
-        auto inp_attn = build_attn_inp_kv_self(true, false);
+        auto * inp_attn = build_attn_inp_kv_unified(true, false);
 
         const float kq_scale = hparams.f_attention_scale == 0.0f ? 1.0f/sqrtf(float(n_embd_head)) : hparams.f_attention_scale;
         for (int il = 0; il < n_layer; ++il) {
@@ -4130,7 +4130,7 @@ struct llm_build_baichuan : public llm_graph_context {
         // inp_pos - contains the positions
         struct ggml_tensor * inp_pos = model.type == LLM_TYPE_7B ? build_inp_pos() : nullptr;
 
-        auto inp_attn = build_attn_inp_kv_self(true, false);
+        auto * inp_attn = build_attn_inp_kv_unified(true, false);
 
         for (int il = 0; il < n_layer; ++il) {
             struct ggml_tensor * inpSA = inpL;
@@ -4248,7 +4248,7 @@ struct llm_build_xverse : public llm_graph_context {
         // inp_pos - contains the positions
         struct ggml_tensor * inp_pos = build_inp_pos();
 
-        auto inp_attn = build_attn_inp_kv_self(true, false);
+        auto * inp_attn = build_attn_inp_kv_unified(true, false);
 
         for (int il = 0; il < n_layer; ++il) {
             struct ggml_tensor * inpSA = inpL;
@@ -4356,7 +4356,7 @@ struct llm_build_falcon : public llm_graph_context {
         // inp_pos - contains the positions
         struct ggml_tensor * inp_pos = build_inp_pos();
 
-        auto inp_attn = build_attn_inp_kv_self(true, false);
+        auto * inp_attn = build_attn_inp_kv_unified(true, false);
 
         for (int il = 0; il < n_layer; ++il) {
             struct ggml_tensor * attn_norm;
@@ -4481,7 +4481,7 @@ struct llm_build_grok : public llm_graph_context {
         // inp_pos - contains the positions
         struct ggml_tensor * inp_pos = build_inp_pos();
 
-        auto inp_attn = build_attn_inp_kv_self(true, false);
+        auto * inp_attn = build_attn_inp_kv_unified(true, false);
 
         for (int il = 0; il < n_layer; ++il) {
             struct ggml_tensor * inpSA = inpL;
@@ -4635,7 +4635,7 @@ struct llm_build_dbrx : public llm_graph_context {
         // inp_pos - contains the positions
         struct ggml_tensor * inp_pos = build_inp_pos();
 
-        auto inp_attn = build_attn_inp_kv_self(true, false);
+        auto * inp_attn = build_attn_inp_kv_unified(true, false);
 
         for (int il = 0; il < n_layer; ++il) {
             struct ggml_tensor * inpSA = inpL;
@@ -4759,7 +4759,7 @@ struct llm_build_starcoder : public llm_graph_context {
         // inp_pos - contains the positions
         struct ggml_tensor * inp_pos = build_inp_pos();
 
-        auto inp_attn = build_attn_inp_kv_self(true, false);
+        auto * inp_attn = build_attn_inp_kv_unified(true, false);
 
         struct ggml_tensor * pos = ggml_get_rows(ctx0, model.pos_embd, inp_pos);
         cb(pos, "pos_embd", -1);
@@ -4862,7 +4862,7 @@ struct llm_build_refact : public llm_graph_context {
 
         inpL = build_inp_embd(model.tok_embd);
 
-        auto inp_attn = build_attn_inp_kv_self(true, false);
+        auto * inp_attn = build_attn_inp_kv_unified(true, false);
 
         for (int il = 0; il < n_layer; ++il) {
             struct ggml_tensor * inpSA = inpL;
@@ -4978,7 +4978,7 @@ struct llm_build_bert : public llm_graph_context {
         inpL = build_norm(inpL, model.tok_norm, model.tok_norm_b, LLM_NORM, -1);
         cb(inpL, "inp_norm", -1);
 
-        auto inp_attn = build_attn_inp_base(false, false);
+        auto * inp_attn = build_attn_inp_no_cache();
 
         // iterate layers
         for (int il = 0; il < n_layer; ++il) {
@@ -5125,7 +5125,7 @@ struct llm_build_bloom : public llm_graph_context {
 
         inpL = build_inp_embd(model.tok_embd);
 
-        auto inp_attn = build_attn_inp_kv_self(true, false);
+        auto * inp_attn = build_attn_inp_kv_unified(true, false);
 
         inpL = build_norm(inpL,
                 model.tok_norm,
@@ -5230,7 +5230,7 @@ struct llm_build_mpt : public llm_graph_context {
 
         inpL = build_inp_embd(model.tok_embd);
 
-        auto inp_attn = build_attn_inp_kv_self(true, false);
+        auto * inp_attn = build_attn_inp_kv_unified(true, false);
 
         if (model.pos_embd) {
             // inp_pos - contains the positions
@@ -5374,7 +5374,7 @@ struct llm_build_stablelm : public llm_graph_context {
         // inp_pos - contains the positions
         struct ggml_tensor * inp_pos = build_inp_pos();
 
-        auto inp_attn = build_attn_inp_kv_self(true, false);
+        auto * inp_attn = build_attn_inp_kv_unified(true, false);
 
         for (int il = 0; il < n_layer; ++il) {
             // norm
@@ -5525,7 +5525,7 @@ struct llm_build_qwen : public llm_graph_context {
         // inp_pos - contains the positions
         struct ggml_tensor * inp_pos = build_inp_pos();
 
-        auto inp_attn = build_attn_inp_kv_self(true, false);
+        auto * inp_attn = build_attn_inp_kv_unified(true, false);
 
         for (int il = 0; il < n_layer; ++il) {
             struct ggml_tensor * inpSA = inpL;
@@ -5641,7 +5641,7 @@ struct llm_build_qwen2 : public llm_graph_context {
         // inp_pos - contains the positions
         struct ggml_tensor * inp_pos = build_inp_pos();
 
-        auto inp_attn = build_attn_inp_kv_self(true, false);
+        auto * inp_attn = build_attn_inp_kv_unified(true, false);
 
         for (int il = 0; il < n_layer; ++il) {
             struct ggml_tensor * inpSA = inpL;
@@ -5756,7 +5756,7 @@ struct llm_build_qwen2vl : public llm_graph_context {
         // inp_pos - contains the positions
         struct ggml_tensor * inp_pos = build_inp_pos();
 
-        auto inp_attn = build_attn_inp_kv_self(true, false);
+        auto * inp_attn = build_attn_inp_kv_unified(true, false);
 
         int sections[4];
         std::copy(std::begin(hparams.rope_sections), std::begin(hparams.rope_sections) + 4, sections);
@@ -5876,7 +5876,7 @@ struct llm_build_qwen2moe : public llm_graph_context {
         // inp_pos - contains the positions
         struct ggml_tensor * inp_pos = build_inp_pos();
 
-        auto inp_attn = build_attn_inp_kv_self(true, false);
+        auto * inp_attn = build_attn_inp_kv_unified(true, false);
 
         for (int il = 0; il < n_layer; ++il) {
             struct ggml_tensor * inpSA = inpL;
@@ -6025,7 +6025,7 @@ struct llm_build_phi2 : public llm_graph_context {
         // inp_pos - contains the positions
         struct ggml_tensor * inp_pos = build_inp_pos();
 
-        auto inp_attn = build_attn_inp_kv_self(true, false);
+        auto * inp_attn = build_attn_inp_kv_unified(true, false);
 
         for (int il = 0; il < n_layer; ++il) {
             attn_norm_output = build_norm(inpL,
@@ -6149,7 +6149,7 @@ struct llm_build_phi3 : public llm_graph_context {
         // inp_pos - contains the positions
         struct ggml_tensor * inp_pos = build_inp_pos();
 
-        auto inp_attn = build_attn_inp_kv_self(true, true);
+        auto * inp_attn = build_attn_inp_kv_unified(true, true);
 
         for (int il = 0; il < n_layer; ++il) {
             auto * residual = inpL;
@@ -6295,7 +6295,7 @@ struct llm_build_plamo : public llm_graph_context {
         // inp_pos - contains the positions
         struct ggml_tensor * inp_pos = build_inp_pos();
 
-        auto inp_attn = build_attn_inp_kv_self(true, false);
+        auto * inp_attn = build_attn_inp_kv_unified(true, false);
 
         for (int il = 0; il < n_layer; ++il) {
 
@@ -6403,7 +6403,7 @@ struct llm_build_gpt2 : public llm_graph_context {
         // inp_pos - contains the positions
         struct ggml_tensor * inp_pos = build_inp_pos();
 
-        auto inp_attn = build_attn_inp_kv_self(true, false);
+        auto * inp_attn = build_attn_inp_kv_unified(true, false);
 
         pos = ggml_get_rows(ctx0, model.pos_embd, inp_pos);
         cb(pos, "pos_embd", -1);
@@ -6511,7 +6511,7 @@ struct llm_build_codeshell : public llm_graph_context {
         // inp_pos - contains the positions
         struct ggml_tensor * inp_pos = build_inp_pos();
 
-        auto inp_attn = build_attn_inp_kv_self(true, false);
+        auto * inp_attn = build_attn_inp_kv_unified(true, false);
 
         for (int il = 0; il < n_layer; ++il) {
             cur = build_norm(inpL,
@@ -6624,7 +6624,7 @@ struct llm_build_orion : public llm_graph_context {
     // inp_pos - contains the positions
     struct ggml_tensor * inp_pos = build_inp_pos();
 
-    auto inp_attn = build_attn_inp_kv_self(true, false);
+    auto * inp_attn = build_attn_inp_kv_unified(true, false);
 
     for (int il = 0; il < n_layer; ++il) {
         struct ggml_tensor * inpSA = inpL;
@@ -6745,7 +6745,7 @@ struct llm_build_internlm2 : public llm_graph_context {
         // inp_pos - contains the positions
         struct ggml_tensor * inp_pos = build_inp_pos();
 
-        auto inp_attn = build_attn_inp_kv_self(true, false);
+        auto * inp_attn = build_attn_inp_kv_unified(true, false);
 
         for (int il = 0; il < n_layer; ++il) {
             struct ggml_tensor * inpSA = inpL;
@@ -6875,7 +6875,7 @@ struct llm_build_minicpm3 : public llm_graph_context {
         // inp_pos - contains the positions
         struct ggml_tensor * inp_pos = build_inp_pos();
 
-        auto inp_attn = build_attn_inp_kv_self(true, false);
+        auto * inp_attn = build_attn_inp_kv_unified(true, false);
 
         for (int il = 0; il < n_layer; ++il) {
             struct ggml_tensor * inpSA = inpL;
@@ -7079,7 +7079,7 @@ struct llm_build_gemma : public llm_graph_context {
         // inp_pos - contains the positions
         struct ggml_tensor * inp_pos = build_inp_pos();
 
-        auto inp_attn = build_attn_inp_kv_self(true, false);
+        auto * inp_attn = build_attn_inp_kv_unified(true, false);
 
         for (int il = 0; il < n_layer; ++il) {
             // norm
@@ -7189,7 +7189,7 @@ struct llm_build_gemma2 : public llm_graph_context {
         // inp_pos - contains the positions
         struct ggml_tensor * inp_pos = build_inp_pos();
 
-        auto inp_attn = build_attn_inp_kv_self(true, true);
+        auto * inp_attn = build_attn_inp_kv_unified(true, true);
 
         for (int il = 0; il < n_layer; ++il) {
             // norm
@@ -7321,7 +7321,7 @@ struct llm_build_starcoder2 : public llm_graph_context {
         // inp_pos - contains the positions
         struct ggml_tensor * inp_pos = build_inp_pos();
 
-        auto inp_attn = build_attn_inp_kv_self(true, false);
+        auto * inp_attn = build_attn_inp_kv_unified(true, false);
 
         for (int il = 0; il < n_layer; ++il) {
             struct ggml_tensor * inpSA = inpL;
@@ -7634,7 +7634,7 @@ struct llm_build_command_r : public llm_graph_context {
         // inp_pos - contains the positions
         struct ggml_tensor * inp_pos = build_inp_pos();
 
-        auto inp_attn = build_attn_inp_kv_self(true, false);
+        auto * inp_attn = build_attn_inp_kv_unified(true, false);
 
         for (int il = 0; il < n_layer; ++il) {
 
@@ -7784,7 +7784,7 @@ struct llm_build_cohere2 : public llm_graph_context {
         // inp_pos - contains the positions
         struct ggml_tensor * inp_pos = build_inp_pos();
 
-        auto inp_attn = build_attn_inp_kv_self(true, true);
+        auto * inp_attn = build_attn_inp_kv_unified(true, true);
 
         // sliding window switch pattern
         const int32_t sliding_window_pattern = 4;
@@ -7921,7 +7921,7 @@ struct llm_build_olmo : public llm_graph_context {
         // inp_pos - contains the positions
         struct ggml_tensor * inp_pos = build_inp_pos();
 
-        auto inp_attn = build_attn_inp_kv_self(true, false);
+        auto * inp_attn = build_attn_inp_kv_unified(true, false);
 
         for (int il = 0; il < n_layer; ++il) {
             struct ggml_tensor * inpSA = inpL;
@@ -8043,7 +8043,7 @@ struct llm_build_olmo2 : public llm_graph_context {
         // inp_pos - contains the positions
         struct ggml_tensor * inp_pos = build_inp_pos();
 
-        auto inp_attn = build_attn_inp_kv_self(true, false);
+        auto * inp_attn = build_attn_inp_kv_unified(true, false);
 
         for (int il = 0; il < n_layer; ++il) {
             struct ggml_tensor * inpSA = inpL;
@@ -8169,7 +8169,7 @@ struct llm_build_olmoe : public llm_graph_context {
         // inp_pos - contains the positions
         struct ggml_tensor * inp_pos = build_inp_pos();
 
-        auto inp_attn = build_attn_inp_kv_self(true, false);
+        auto * inp_attn = build_attn_inp_kv_unified(true, false);
 
         for (int il = 0; il < n_layer; ++il) {
             struct ggml_tensor * inpSA = inpL;
@@ -8292,7 +8292,7 @@ struct llm_build_openelm : public llm_graph_context {
         // inp_pos - contains the positions
         struct ggml_tensor * inp_pos = build_inp_pos();
 
-        auto inp_attn = build_attn_inp_kv_self(true, false);
+        auto * inp_attn = build_attn_inp_kv_unified(true, false);
 
         for (int il = 0; il < n_layer; ++il) {
             const int64_t n_head    = hparams.n_head(il);
@@ -8422,7 +8422,7 @@ struct llm_build_gptneox : public llm_graph_context {
         // inp_pos - contains the positions
         struct ggml_tensor * inp_pos = build_inp_pos();
 
-        auto inp_attn = build_attn_inp_kv_self(true, false);
+        auto * inp_attn = build_attn_inp_kv_unified(true, false);
 
         for (int il = 0; il < n_layer; ++il) {
             cur = build_norm(inpL,
@@ -8568,7 +8568,7 @@ struct llm_build_arctic : public llm_graph_context {
         // inp_pos - contains the positions
         struct ggml_tensor * inp_pos = build_inp_pos();
 
-        auto inp_attn = build_attn_inp_kv_self(true, false);
+        auto * inp_attn = build_attn_inp_kv_unified(true, false);
 
         for (int il = 0; il < n_layer; ++il) {
             struct ggml_tensor * inpSA = inpL;
@@ -8700,7 +8700,7 @@ struct llm_build_deepseek : public llm_graph_context {
         // inp_pos - contains the positions
         struct ggml_tensor * inp_pos = build_inp_pos();
 
-        auto inp_attn = build_attn_inp_kv_self(true, false);
+        auto * inp_attn = build_attn_inp_kv_unified(true, false);
 
         const float kq_scale = hparams.f_attention_scale == 0.0f ? 1.0f/sqrtf(float(n_embd_head)) : hparams.f_attention_scale;
 
@@ -8865,7 +8865,7 @@ struct llm_build_deepseek2 : public llm_graph_context {
         // inp_pos - contains the positions
         struct ggml_tensor * inp_pos = build_inp_pos();
 
-        auto inp_attn = build_attn_inp_kv_self(true, false);
+        auto * inp_attn = build_attn_inp_kv_unified(true, false);
 
         for (int il = 0; il < n_layer; ++il) {
             struct ggml_tensor * inpSA = inpL;
@@ -9085,7 +9085,7 @@ struct llm_build_bitnet : public llm_graph_context {
         // inp_pos - contains the positions
         struct ggml_tensor * inp_pos = build_inp_pos();
 
-        auto inp_attn = build_attn_inp_kv_self(true, false);
+        auto * inp_attn = build_attn_inp_kv_unified(true, false);
 
         for (int il = 0; il < n_layer; ++il) {
             struct ggml_tensor * inpSA = inpL;
@@ -9238,7 +9238,7 @@ struct llm_build_t5_enc : public llm_graph_context {
 
         struct ggml_tensor * pos_bucket_enc = build_inp_pos_bucket_enc();
 
-        auto inp_attn = build_attn_inp_base(false, false);
+        auto * inp_attn = build_attn_inp_no_cache();
 
         for (int il = 0; il < n_layer; ++il) {
             struct ggml_tensor * inpSA = inpL;
@@ -9343,7 +9343,8 @@ struct llm_build_t5_dec : public llm_graph_context {
 
         const int64_t n_outputs_enc = embd_enc->ne[1];
 
-        auto inp_attn = build_attn_inp_dec(true, false);
+        auto * inp_attn_self  = build_attn_inp_kv_unified(true, false);
+        auto * inp_attn_cross = build_attn_inp_cross();
 
         for (int il = 0; il < n_layer; ++il) {
             struct ggml_tensor * inpSA = inpL;
@@ -9372,7 +9373,7 @@ struct llm_build_t5_dec : public llm_graph_context {
                 struct ggml_tensor * attn_rel_b = model.layers[il].attn_rel_b ? model.layers[il].attn_rel_b : model.layers[0].attn_rel_b;
                 struct ggml_tensor * kq_b = build_pos_bias(pos_bucket_dec, attn_rel_b);
 
-                cur = build_attn(inp_attn->inp_kv_self, gf, // !!!
+                cur = build_attn(inp_attn_self, gf,
                         model.layers[il].wo, model.layers[il].bo,
                         Qcur, Kcur, Vcur, kq_b, 1.0f, il);
                 cb(cur, "kqv_out", il);
@@ -9404,7 +9405,7 @@ struct llm_build_t5_dec : public llm_graph_context {
                 Kcur = ggml_reshape_3d(ctx0, Kcur, n_embd_head, n_head_kv, n_outputs_enc);
                 Vcur = ggml_reshape_3d(ctx0, Vcur, n_embd_head, n_head_kv, n_outputs_enc);
 
-                cur = build_attn(inp_attn, gf,
+                cur = build_attn(inp_attn_cross, gf,
                         model.layers[il].wo_cross, nullptr,
                         Qcur, Kcur, Vcur, nullptr, 1.0f, il);
                 cb(cur, "kqv_out", il);
@@ -9508,7 +9509,7 @@ struct llm_build_jais : public llm_graph_context {
 
         inpL = build_inp_embd(model.tok_embd);
 
-        auto inp_attn = build_attn_inp_kv_self(true, false);
+        auto * inp_attn = build_attn_inp_kv_unified(true, false);
 
         for (int il = 0; il < n_layer; ++il) {
             cur = build_norm(inpL,
@@ -9604,7 +9605,7 @@ struct llm_build_chatglm : public llm_graph_context {
         // inp_pos - contains the positions
         struct ggml_tensor * inp_pos = build_inp_pos();
 
-        auto inp_attn = build_attn_inp_kv_self(true, false);
+        auto * inp_attn = build_attn_inp_kv_unified(true, false);
 
         for (int il = 0; il < n_layer; ++il) {
             struct ggml_tensor * inpSA = inpL;
@@ -9736,7 +9737,7 @@ struct llm_build_nemotron : public llm_graph_context {
         // inp_pos - contains the positions
         struct ggml_tensor * inp_pos = build_inp_pos();
 
-        auto inp_attn = build_attn_inp_kv_self(true, false);
+        auto * inp_attn = build_attn_inp_kv_unified(true, false);
 
         for (int il = 0; il < n_layer; ++il) {
             struct ggml_tensor * inpSA = inpL;
@@ -9859,7 +9860,7 @@ struct llm_build_exaone : public llm_graph_context {
         // inp_pos - contains the positions
         struct ggml_tensor * inp_pos = build_inp_pos();
 
-        auto inp_attn = build_attn_inp_kv_self(true, false);
+        auto * inp_attn = build_attn_inp_kv_unified(true, false);
 
         for (int il = 0; il < n_layer; ++il) {
             struct ggml_tensor * inpSA = inpL;
@@ -10375,7 +10376,7 @@ struct llm_build_chameleon : public llm_graph_context {
         // inp_pos - contains the positions
         struct ggml_tensor * inp_pos = build_inp_pos();
 
-        auto inp_attn = build_attn_inp_kv_self(true, false);
+        auto * inp_attn = build_attn_inp_kv_unified(true, false);
 
         for (int il = 0; il < n_layer; ++il) {
             struct ggml_tensor * inpSA = inpL;
